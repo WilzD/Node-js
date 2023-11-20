@@ -1,34 +1,14 @@
+//this file is connected to writing-reading-Routes.js
 const http=require('http')
-const fs=require('fs')
+//we are requiring that file here
+//this will go in that file and see what us there in module.exports there
+// whatever there in that exports we can take it here in this file 
+const Routes=require('./writing-reading-Routes.js')
 
-const server=http.createServer((req,res)=>{
-const url=req.url
-const method=req.method
-if(url==='/'){
-      fs.readFile('message.txt','utf8',function(err,data){
-      res.write('<html>')
-      res.write('<head><title>Write a Good message</title></head>')
-      res.write(`<body><div>${data}</div><form action="/message" method="POST">Write a Message<input type="text" name="message"><button type="submit">Send</button></form></body>`)
-      res.write('</html>')
-      return res.end()
-    });
-}
-if(url==='/message' && method==='POST'){
-    const body=[]
-    req.on('data',(chunk)=>{
-      console.log(chunk)
-     body.push(chunk)
-    })
-    return req.on('end',()=>{
-      const parsedBody=Buffer.concat(body).toString()
-      const message=parsedBody.split('=')[1]
-      fs.writeFile('message.txt',message, err=>{
-        res.statusCode=302
-        res.setHeader('Location','/')
-        return res.end()
-      })
-    })
-  }
-})
+//now the function requestHandler is stored in routes
+//and we are saying to node .., hey make a server for what is there in routes
+//in this way we can split two files and make our code clean
+const server=http.createServer(Routes.handeler) // we are fetching handeler as an key of module object
 
+console.log(Routes.someText)
 server.listen(4000)
